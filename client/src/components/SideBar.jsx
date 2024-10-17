@@ -49,7 +49,7 @@ export const SideBar = () => {
 
       <aside
         id="logo-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0"
+        className="fixed shadow-xl top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200/50 sm:translate-x-0"
         aria-label="Sidebar"
       >
         <div className="flex flex-col justify-between h-full px-3 pb-4 overflow-y-auto bg-white">
@@ -59,6 +59,7 @@ export const SideBar = () => {
           <ul className="flex flex-col gap-2">
             <div className="bg-gray-400 w-full h-0.5"></div>
             <SettingsBtn name={"Profile"} />
+            <LogOutButton />
           </ul>
         </div>
       </aside>
@@ -98,10 +99,12 @@ const List = () => {
 const SettingsBtn = ({ name }) => {
   const location = useLocation();
   const isActive = location.pathname.startsWith(`/${name}`);
+  const { user } = useAuth();
+  const id = user._id;
   return (
     <li>
       <Link
-        to={`/${name.toLowerCase()}`}
+        to={`/${name.toLowerCase()}?id=${id}`}
         className={`flex justify-start items-center p-2 text-gray-900 border border-gray-500/50 rounded-lg ${
           isActive ? "bg-gray-100" : ""
         } dark:hover:bg-gray-100 group`}
@@ -113,6 +116,21 @@ const SettingsBtn = ({ name }) => {
         />
         <span className="ms-3">{name}</span>
       </Link>
+    </li>
+  );
+};
+
+const LogOutButton = () => {
+  const { logout } = useAuth();
+  return (
+    <li>
+      <button
+        onClick={logout}
+        className={`flex w-full justify-start items-center p-2 border border-gray-500/50 rounded-lg bg-red-600 text-white group`}
+      >
+        <img className="w-6 h-6 rounded-full" src="logout.svg" alt="logout" />
+        <span className="ms-3">Log Out</span>
+      </button>
     </li>
   );
 };

@@ -12,3 +12,12 @@ export const updateUserRole = async (id, role) => {
     console.log("error updating role", error);
   }
 };
+
+export const getUser = async (id) => {
+  try {
+    const res = await axios.get(`/api/users/${id}`);
+    return res.data.data;
+  } catch (error) {
+    console.log("error fetching user", error);
+  }
+};
