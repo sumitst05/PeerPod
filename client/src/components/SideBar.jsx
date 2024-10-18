@@ -1,9 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useRoom } from "../hooks/useRoom";
 import { useAuth } from "../hooks/useAuth";
+import { useState } from "react";
 
 export const SideBar = () => {
+  const [IsOpen, setIsOpen] = useState(false);
+  const toggleDrawer = () => {
+    setIsOpen(!IsOpen);
+  };
+  const { roomId } = useParams();
+  const roomName = roomId.replace("/chat/", "");
   return (
     <>
       <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
@@ -11,13 +18,13 @@ export const SideBar = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
               <button
+                onClick={toggleDrawer}
                 data-drawer-target="logo-sidebar"
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
                 type="button"
                 className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               >
-                <span className="sr-only">Open sidebar</span>
                 <svg
                   className="w-6 h-6"
                   aria-hidden="true"
@@ -39,7 +46,7 @@ export const SideBar = () => {
                   alt="PeerPod Logo"
                 />
                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap">
-                  PeerPod
+                  PeerPod • {roomName}
                 </span>
               </Link>
             </div>
@@ -49,16 +56,22 @@ export const SideBar = () => {
 
       <aside
         id="logo-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0"
+        className={`fixed shadow-xl top-0 left-0 z-40 w-64 h-screen pt-20 transition-all duration-300 ${
+          IsOpen ? "-translate-x-0" : "-translate-x-full"
+        } bg-white border-r border-gray-200/50 sm:translate-x-0`}
         aria-label="Sidebar"
       >
-        <div className="flex flex-col justify-between h-full px-3 pb-4 overflow-y-auto bg-white">
+        <div
+          onClick={toggleDrawer}
+          className="flex flex-col justify-between h-full px-3 pb-4 overflow-y-auto bg-white"
+        >
           <ul className="space-y-2 font-medium">
             <List />
           </ul>
           <ul className="flex flex-col gap-2">
             <div className="bg-gray-400 w-full h-0.5"></div>
             <SettingsBtn name={"Profile"} />
+            <LogOutButton />
           </ul>
         </div>
       </aside>
@@ -98,10 +111,12 @@ const List = () => {
 const SettingsBtn = ({ name }) => {
   const location = useLocation();
   const isActive = location.pathname.startsWith(`/${name}`);
+  const { user } = useAuth();
+  const id = user._id;
   return (
     <li>
       <Link
-        to={`/${name.toLowerCase()}`}
+        to={`/${name.toLowerCase()}?id=${id}`}
         className={`flex justify-start items-center p-2 text-gray-900 border border-gray-500/50 rounded-lg ${
           isActive ? "bg-gray-100" : ""
         } dark:hover:bg-gray-100 group`}
@@ -113,6 +128,21 @@ const SettingsBtn = ({ name }) => {
         />
         <span className="ms-3">{name}</span>
       </Link>
+    </li>
+  );
+};
+
+const LogOutButton = () => {
+  const { logout } = useAuth();
+  return (
+    <li>
+      <button
+        onClick={logout}
+        className={`flex w-full justify-start items-center p-2 border border-gray-500/50 rounded-lg bg-red-600 text-white group`}
+      >
+        <img className="w-6 h-6 rounded-full" src="logout.svg" alt="logout" />
+        <span className="ms-3">Log Out</span>
+      </button>
     </li>
   );
 };
