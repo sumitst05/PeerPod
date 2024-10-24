@@ -70,6 +70,10 @@ export const Chat = ({ roomId }) => {
     replyRef.current?.focus();
   };
 
+	const closeReply = () =>{
+		setReplyTo(null);
+	}
+
   const handleMessageSend = () => {
     if (newMessage.trim()) {
       const message = {
@@ -126,12 +130,30 @@ export const Chat = ({ roomId }) => {
                 </div>
                 <div ref={chatEndRef} /> {/* Empty div to scroll into view */}
               </div>
-            </div>
-            {replyTo?.sender.username && (
-              <p className="text-violet-500 font-bold ml-2">
-                Replying to: @{replyTo?.sender.username}
-              </p>
-            )}
+						</div>
+						{replyTo?.sender.username && (
+							<div className="flex justify-between">
+								<p className="text-violet-500 font-bold ml-2">
+									Replying to: @{replyTo?.sender.username}
+								</p>
+								<button
+									type="button"
+								  onClick={closeReply}
+									className="text-gray-900 dark:text-white hover:bg-red-500 hover:text-gray-300 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+								>
+									<svg className="w-3 h-3" viewBox="0 0 14 14">
+										<path
+											stroke="currentColor"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+										/>
+									</svg>
+									<span className="sr-only">Close modal</span>
+								</button>
+							</div>
+						)}
             <div className="flex flex-row items-center h-16 drop-shadow-lg rounded-xl bg-white dark:bg-neutral-900 w-full px-2">
               <div className="flex-grow">
                 <div className="relative w-full">
@@ -168,17 +190,18 @@ export const Chat = ({ roomId }) => {
                     </svg>
                   </button>
                   {showEmojiPicker && (
-                    <div className="emoji-picker-container border absolute z-50 bottom-[4rem] md:left-[56rem] w-fit">
+                    <div className="emoji-picker-container border absolute z-50 bottom-[4rem] right-0 w-fit">
                       <Picker
-                        height={400}
-                        width={300}
+                        height={350}
+                        width={400}
                         onEmojiClick={(e) =>
                           setNewMessage((prev) => prev + e.emoji)
                         }
+												style={{ fontSize: '1.2rem'}}
                         disableSearchBar
                         disableSkinTonePicker
                         lazyLoadEmojis
-                        className="md:w-full w-1/2 max-w-md mx-auto"
+                        className="w-full h-full"
                       />
                     </div>
                   )}
@@ -312,11 +335,11 @@ const ThreeDots = ({ onReply }) => {
     <div className="flex">
       <button
         onClick={toggleDropdown}
-        className="relative flex-shrink-0 inline-flex self-center items-center mt-4 text-sm font-medium text-center text-gray-900 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50"
+        className="relative flex-shrink-0 inline-flex self-center items-center mt-4 text-sm font-medium text-center text-gray-900 rounded-lg hover:bg-gray-100 focus:outline-none dark:text-white"
         type="button"
       >
         <svg
-          className="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-700"
+          className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-white dark:hover:bg-neutral-900"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
@@ -326,18 +349,18 @@ const ThreeDots = ({ onReply }) => {
         </svg>
       </button>
       {isOpen && (
-        <div className="ml-4 absolute mx-auto z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-40">
-          <div className="text-sm text-gray-700 dark:text-gray-200">
+        <div className="ml-4 absolute mx-auto z-10 bg-white divide-y dark:bg-neutral-800 divide-gray-100 rounded-lg shadow w-40">
+          <div className="text-sm text-gray-700">
             <button
-              className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900"
+              className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 dark:text-white dark:hover:bg-neutral-700"
               onClick={onReply}
             >
               Reply
             </button>
-            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900">
+            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 dark:text-white dark:hover:bg-neutral-700">
               Edit
             </button>
-            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900">
+            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-900 dark:text-white dark:hover:bg-neutral-700">
               Delete
             </button>
           </div>
